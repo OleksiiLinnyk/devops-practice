@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+  bash-service:
+    build: .
+    ports:
+      - "8000:8000"
+  master-mysql:
+    image: mysql:8.0
+    container_name: "master-mysql"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=devops_db
+      - MYSQL_PASSWORD=root
+    networks:
+      - devops_network
+  slave-mysql:
+    image: mysql:8.0
+    container_name: "slave-mysql"
+    depends_on:
+      - master-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=devops_db
+      - MYSQL_PASSWORD=root
+    networks:
+      - devops_network
+networks:
+  devops_network:
+    external: true
